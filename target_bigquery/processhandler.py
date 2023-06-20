@@ -352,6 +352,7 @@ class LoadJobProcessHandler(BaseProcessHandler):
         partition_field = table_config.get("partition_field", None)
         partition_type = table_config.get("partition_type", bigquery.table.TimePartitioningType.DAY)
         cluster_fields = table_config.get("cluster_fields", None)
+        expiration_ms = table_config.get("expiration_ms", None)
         force_fields = table_config.get("force_fields", {})
 
         if partition_type not in [bigquery.table.TimePartitioningType.DAY,
@@ -372,7 +373,8 @@ class LoadJobProcessHandler(BaseProcessHandler):
         if partition_field:
             load_config.time_partitioning = bigquery.table.TimePartitioning(
                 type_=partition_type,
-                field=partition_field
+                field=partition_field,
+                expiration_ms=expiration_ms,
             )
 
         # clustering
