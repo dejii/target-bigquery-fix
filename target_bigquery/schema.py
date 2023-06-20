@@ -183,8 +183,8 @@ def convert_field_type(field_name, field_property, force_fields={}):
                        "date-time": "TIMESTAMP",
                        "date": "DATE",
                        "time": "TIME",
-                       "object": "RECORD",
-                       "array": "RECORD",
+                       "object": "STRING",
+                       "array": "STRING",
                        "bq-geography": "GEOGRAPHY",
                        "bq-decimal": "DECIMAL",
                        "bq-bigdecimal": "BIGDECIMAL"
