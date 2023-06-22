@@ -2,6 +2,7 @@
 the purpose of this module is to convert JSON schema to BigQuery schema.
 """
 import re
+import json
 
 from target_bigquery.simplify_json_schema import BQ_DECIMAL_SCALE_MAX, BQ_BIGDECIMAL_SCALE_MAX, \
     BQ_DECIMAL_MAX_PRECISION_INCREMENT, BQ_BIGDECIMAL_MAX_PRECISION_INCREMENT
@@ -183,8 +184,8 @@ def convert_field_type(field_name, field_property, force_fields={}):
                        "date-time": "TIMESTAMP",
                        "date": "DATE",
                        "time": "TIME",
-                       "object": "STRING",
-                       "array": "STRING",
+                       "object": "JSON",
+                       "array": "JSON",
                        "bq-geography": "GEOGRAPHY",
                        "bq-decimal": "DECIMAL",
                        "bq-bigdecimal": "BIGDECIMAL"
@@ -445,7 +446,8 @@ def format_record_to_schema(record, bq_schema):
                        "BOOLEAN": bool,
                        "GEOGRAPHY": str,
                        "DECIMAL": str,
-                       "BIGDECIMAL": str
+                       "BIGDECIMAL": str,
+                       "JSON": json.dumps
                        }
 
     if isinstance(record, list):
