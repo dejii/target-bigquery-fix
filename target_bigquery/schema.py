@@ -3,6 +3,7 @@ the purpose of this module is to convert JSON schema to BigQuery schema.
 """
 import re
 import json
+from decimal import Decimal
 
 from target_bigquery.simplify_json_schema import BQ_DECIMAL_SCALE_MAX, BQ_BIGDECIMAL_SCALE_MAX, \
     BQ_DECIMAL_MAX_PRECISION_INCREMENT, BQ_BIGDECIMAL_MAX_PRECISION_INCREMENT
@@ -419,6 +420,17 @@ def build_schema(schema, key_properties=None, add_metadata=True, force_fields={}
     return schema_bigquery
 
 
+# Customized JSON encoder can do Decimal encoding
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+
+def dump_json_to_str(obj):
+    return json.dumps(obj, cls=JSONEncoder)
+
+
 def format_record_to_schema(record, bq_schema):
     """
     Purpose:
@@ -447,7 +459,7 @@ def format_record_to_schema(record, bq_schema):
                        "GEOGRAPHY": str,
                        "DECIMAL": str,
                        "BIGDECIMAL": str,
-                       "JSON": json.dumps
+                       "JSON": dump_json_to_str
                        }
 
     if isinstance(record, list):
