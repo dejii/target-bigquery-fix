@@ -472,5 +472,8 @@ def format_record_to_schema(record, bq_schema):
                 # mode: REPEATED, type: [any]
                 record[k] = [conversion_dict[bq_schema[k]["type"]](vi) for vi in v]
             else:
-                record[k] = conversion_dict[bq_schema[k]["type"]](v)
+                try:
+                    record[k] = conversion_dict[bq_schema[k]["type"]](v)
+                except:
+                    raise Exception(f"===> data conversion error: column={k}, column_type={bq_schema[k]['type']}")
     return record
