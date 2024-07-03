@@ -2,3 +2,4 @@ singer-python~=5.12.2
 google-cloud-bigquery~=3.3.5
 jsonschema~=2.6.0
 setuptools~=65.5.0
+numpy~=1.26.4
