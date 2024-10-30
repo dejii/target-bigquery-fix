@@ -470,7 +470,13 @@ def format_record_to_schema(record, bq_schema):
                 record[k] = format_record_to_schema(record[k], bq_schema[k]["fields"])
             elif bq_schema[k].get("mode") == "REPEATED":
                 # mode: REPEATED, type: [any]
-                record[k] = [conversion_dict[bq_schema[k]["type"]](vi) for vi in v]
+                try:
+                    col_type = bq_schema[k]["type"]
+                    if col_type == "JSON" and isinstance(v, str):
+                        v = json.loads(v)
+                    record[k] = [conversion_dict[col_type](vi) for vi in v]
+                except:
+                    raise Exception(f"===> repeated data conv error: column={k}, column_type={col_type}, value={v}, value_type={type(v)}")
             else:
                 try:
                     col_type = bq_schema[k]["type"]
@@ -479,5 +485,5 @@ def format_record_to_schema(record, bq_schema):
                     else:
                         record[k] = conversion_dict[col_type](v)
                 except:
-                    raise Exception(f"===> data conversion error: column={k}, column_type={bq_schema[k]['type']}, value={v}")
+                    raise Exception(f"===> data conv error: column={k}, column_type={col_type}, value={v}, value_type={type(v)}")
     return record
