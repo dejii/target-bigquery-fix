@@ -485,7 +485,7 @@ def format_record_to_schema(record, bq_schema):
                             record[k] = json.loads(v)
                         except:
                             record[k] = v
-                    elif col_type == "JSON" and isinstance(v, bool):
+                    elif col_type == "JSON" and (isinstance(v, bool) or isinstance(v, list)):
                         record[k] = v
                     else:
                         record[k] = conversion_dict[col_type](v)
